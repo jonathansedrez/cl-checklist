@@ -121,10 +121,10 @@ export default function ChecklistPage({
   postServiceLinesToTodo: TodoResponse[];
 }) {
   const router = useRouter();
-  const [isLoadingCell, setIsLoadingCell] = useState<string | null>(null);
+  const [cellsLoading, setCellsLoading] = useState<string[]>([]);
 
   const handleUpdateCheckbox = (checkboxCell: string, isChecked: boolean) => {
-    setIsLoadingCell(checkboxCell);
+    setCellsLoading((prev) => [...prev, checkboxCell]);
 
     fetch('/api/sheet', {
       method: 'POST',
@@ -144,7 +144,9 @@ export default function ChecklistPage({
         console.error('Failed to update checkbox:', error);
       })
       .finally(() => {
-        setIsLoadingCell(null);
+        setCellsLoading((prev) =>
+          prev.filter((loader) => loader !== checkboxCell),
+        );
       });
   };
 
@@ -159,7 +161,7 @@ export default function ChecklistPage({
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={isLoadingCell === todo.checkboxCell}
+              isLoading={cellsLoading.includes(todo.checkboxCell)}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -177,7 +179,7 @@ export default function ChecklistPage({
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={isLoadingCell === todo.checkboxCell}
+              isLoading={cellsLoading.includes(todo.checkboxCell)}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -195,7 +197,7 @@ export default function ChecklistPage({
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={isLoadingCell === todo.checkboxCell}
+              isLoading={cellsLoading.includes(todo.checkboxCell)}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -213,7 +215,7 @@ export default function ChecklistPage({
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={isLoadingCell === todo.checkboxCell}
+              isLoading={cellsLoading.includes(todo.checkboxCell)}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
