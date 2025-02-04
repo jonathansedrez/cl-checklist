@@ -16,6 +16,21 @@ const RECEPTION_CHECKBOX_COLUMN = 'D';
 const DURING_THE_SERVICE_CHECKBOX_COLUMN = 'G';
 const POST_SERVICE_CHECKBOX_COLUMN = 'J';
 
+const normalizeSheetResult = (
+  columnName: string,
+  plainSheetValue: string[][],
+): TodoResponse[] => {
+  return plainSheetValue.map((line, index) => {
+    const [checkboxCell, descriptionCell] = line;
+    const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
+    return {
+      isChecked: checkboxCell === 'TRUE',
+      description: descriptionCell,
+      checkboxCell: `${columnName}${index + CHECKLIST_START_ROW_OFFSET}`,
+    };
+  });
+};
+
 export async function getServerSideProps() {
   const auth = await google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -72,84 +87,44 @@ export async function getServerSideProps() {
   const allPostServiceValues = allPostServiceSheetData.data
     .values as string[][];
 
-  const parsedPreServiceLinesToTodo = allPreServiceValues.map((line, index) => {
-    const [checkboxColumn, descriptionColumn] = line;
-    const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
-    return {
-      isChecked: checkboxColumn === 'TRUE',
-      description: descriptionColumn,
-      checkboxCell: `${PRE_SERVICE_CHECKBOX_COLUMN}${
-        index + CHECKLIST_START_ROW_OFFSET
-      }`,
-    };
-  });
-
-  const parsedReceptionLinesToTodo = allReceptionValues.map((line, index) => {
-    const [checkboxColumn, descriptionColumn] = line;
-    const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
-    return {
-      isChecked: checkboxColumn === 'TRUE',
-      description: descriptionColumn,
-      checkboxCell: `${RECEPTION_CHECKBOX_COLUMN}${
-        index + CHECKLIST_START_ROW_OFFSET
-      }`,
-    };
-  });
-
-  const parsedDuringTheServiceLinesToTodo = allDuringTheServiceValues.map(
-    (line, index) => {
-      const [checkboxColumn, descriptionColumn] = line;
-      const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
-      return {
-        isChecked: checkboxColumn === 'TRUE',
-        description: descriptionColumn,
-        checkboxCell: `${DURING_THE_SERVICE_CHECKBOX_COLUMN}${
-          index + CHECKLIST_START_ROW_OFFSET
-        }`,
-      };
-    },
-  );
-
-  const parsedPostServiceLinesToTodo = allPostServiceValues.map(
-    (line, index) => {
-      const [checkboxColumn, descriptionColumn] = line;
-      const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
-      return {
-        isChecked: checkboxColumn === 'TRUE',
-        description: descriptionColumn,
-        checkboxCell: `${POST_SERVICE_CHECKBOX_COLUMN}${
-          index + CHECKLIST_START_ROW_OFFSET
-        }`,
-      };
-    },
-  );
-
   return {
     props: {
-      parsedPreServiceLinesToTodo,
-      parsedReceptionLinesToTodo,
-      parsedDuringTheServiceLinesToTodo,
-      parsedPostServiceLinesToTodo,
+      preServiceLinesToTodo: normalizeSheetResult(
+        PRE_SERVICE_CHECKBOX_COLUMN,
+        allPreServiceValues,
+      ),
+      receptionLinesToTodo: normalizeSheetResult(
+        RECEPTION_CHECKBOX_COLUMN,
+        allReceptionValues,
+      ),
+      duringTheServiceLinesToTodo: normalizeSheetResult(
+        DURING_THE_SERVICE_CHECKBOX_COLUMN,
+        allDuringTheServiceValues,
+      ),
+      postServiceLinesToTodo: normalizeSheetResult(
+        POST_SERVICE_CHECKBOX_COLUMN,
+        allPostServiceValues,
+      ),
     },
   };
 }
 
-export default function Post({
-  parsedPreServiceLinesToTodo,
-  parsedReceptionLinesToTodo,
-  parsedDuringTheServiceLinesToTodo,
-  parsedPostServiceLinesToTodo,
+export default function ChecklistPage({
+  preServiceLinesToTodo,
+  receptionLinesToTodo,
+  duringTheServiceLinesToTodo,
+  postServiceLinesToTodo,
 }: {
-  parsedPreServiceLinesToTodo: TodoResponse[];
-  parsedReceptionLinesToTodo: TodoResponse[];
-  parsedDuringTheServiceLinesToTodo: TodoResponse[];
-  parsedPostServiceLinesToTodo: TodoResponse[];
+  preServiceLinesToTodo: TodoResponse[];
+  receptionLinesToTodo: TodoResponse[];
+  duringTheServiceLinesToTodo: TodoResponse[];
+  postServiceLinesToTodo: TodoResponse[];
 }) {
   const router = useRouter();
-  const [loadingCell, setLoadingCell] = useState<string | null>(null);
+  const [isLoadingCell, setIsLoadingCell] = useState<string | null>(null);
 
   const handleUpdateCheckbox = (checkboxCell: string, isChecked: boolean) => {
-    setLoadingCell(checkboxCell);
+    setIsLoadingCell(checkboxCell);
 
     fetch('/api/sheet', {
       method: 'POST',
@@ -169,7 +144,7 @@ export default function Post({
         console.error('Failed to update checkbox:', error);
       })
       .finally(() => {
-        setLoadingCell(null);
+        setIsLoadingCell(null);
       });
   };
 
@@ -178,13 +153,13 @@ export default function Post({
       <div className="space-y-2">
         <p>Pré recepição</p>
         <div>
-          {parsedPreServiceLinesToTodo.map((todo) => (
+          {preServiceLinesToTodo.map((todo) => (
             <Checkbox
               key={todo.checkboxCell}
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={loadingCell === todo.checkboxCell}
+              isLoading={isLoadingCell === todo.checkboxCell}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -196,13 +171,13 @@ export default function Post({
       <div className="space-y-2">
         <p>Recepição</p>
         <div>
-          {parsedReceptionLinesToTodo.map((todo) => (
+          {receptionLinesToTodo.map((todo) => (
             <Checkbox
               key={todo.checkboxCell}
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={loadingCell === todo.checkboxCell}
+              isLoading={isLoadingCell === todo.checkboxCell}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -214,13 +189,13 @@ export default function Post({
       <div className="space-y-2">
         <p>Durante o culto</p>
         <div>
-          {parsedDuringTheServiceLinesToTodo.map((todo) => (
+          {duringTheServiceLinesToTodo.map((todo) => (
             <Checkbox
               key={todo.checkboxCell}
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={loadingCell === todo.checkboxCell}
+              isLoading={isLoadingCell === todo.checkboxCell}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
@@ -232,13 +207,13 @@ export default function Post({
       <div className="space-y-2">
         <p>Pós culto</p>
         <div>
-          {parsedPostServiceLinesToTodo.map((todo) => (
+          {postServiceLinesToTodo.map((todo) => (
             <Checkbox
               key={todo.checkboxCell}
               id={todo.checkboxCell}
               label={todo.description}
               isChecked={todo.isChecked}
-              isLoading={loadingCell === todo.checkboxCell}
+              isLoading={isLoadingCell === todo.checkboxCell}
               onChange={(isChecked) =>
                 handleUpdateCheckbox(todo.checkboxCell, isChecked)
               }
