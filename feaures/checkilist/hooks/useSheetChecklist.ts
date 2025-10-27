@@ -1,8 +1,18 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-export function useSheetChecklist(sheetPage: string) {
+interface SheetChecklistReturn {
+  /** Array of cell identifiers that are currently being updated. Used to show loading states for checkboxes */
+  cellsLoading: string[];
+  handleUpdateCheckbox: (
+    checkboxCell: string,
+    isChecked: boolean,
+  ) => Promise<void>;
+}
+
+export function useSheetChecklist(sheetPage: string): SheetChecklistReturn {
   const router = useRouter();
+  /** Tracks which cells are currently being updated to show loading states */
   const [cellsLoading, setCellsLoading] = useState<string[]>([]);
 
   const handleUpdateCheckbox = async (
