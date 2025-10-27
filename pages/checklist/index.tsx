@@ -1,8 +1,7 @@
 import { google } from 'googleapis';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Checkbox from '@/components/checkbox';
-import { TodoResponse } from './types';
+import { TodoResponse } from '../../types';
+import { useSheetChecklist } from '@/feaures/checkilist/hooks/useSheetChecklist';
 
 const SHEET_PAGE = 'APOIO';
 
@@ -120,35 +119,7 @@ export default function ChecklistPage({
   duringTheServiceLinesToTodo: TodoResponse[];
   postServiceLinesToTodo: TodoResponse[];
 }) {
-  const router = useRouter();
-  const [cellsLoading, setCellsLoading] = useState<string[]>([]);
-
-  const handleUpdateCheckbox = (checkboxCell: string, isChecked: boolean) => {
-    setCellsLoading((prev) => [...prev, checkboxCell]);
-
-    fetch('/api/sheet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        range: `${SHEET_PAGE}!${checkboxCell}`,
-        value: isChecked ? 'TRUE' : 'FALSE',
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return router.replace(router.asPath);
-        }
-        throw new Error('Failed to update checkbox');
-      })
-      .catch((error) => {
-        console.error('Failed to update checkbox:', error);
-      })
-      .finally(() => {
-        setCellsLoading((prev) =>
-          prev.filter((loader) => loader !== checkboxCell),
-        );
-      });
-  };
+  const { handleUpdateCheckbox, cellsLoading } = useSheetChecklist(SHEET_PAGE);
 
   return (
     <fieldset className="m-5">
