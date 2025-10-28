@@ -1,7 +1,8 @@
 import { google } from 'googleapis';
 import Checkbox from '@/components/checkbox';
-import { TodoResponse } from '../../types';
 import { useSheetChecklist } from '@/feaures/checkilist/hooks/useSheetChecklist';
+import { normalizeSheetResult } from '@/feaures/checkilist/utils/normalizeSheetResult';
+import { TodoResponse } from '../../types';
 
 const SHEET_PAGE = 'APOIO';
 
@@ -14,21 +15,6 @@ const PRE_SERVICE_CHECKBOX_COLUMN = 'A';
 const RECEPTION_CHECKBOX_COLUMN = 'D';
 const DURING_THE_SERVICE_CHECKBOX_COLUMN = 'G';
 const POST_SERVICE_CHECKBOX_COLUMN = 'J';
-
-const normalizeSheetResult = (
-  columnName: string,
-  plainSheetValue: string[][],
-): TodoResponse[] => {
-  return plainSheetValue.map((line, index) => {
-    const [checkboxCell, descriptionCell] = line;
-    const CHECKLIST_START_ROW_OFFSET = 3; // Offset between first row and checklist first element
-    return {
-      isChecked: checkboxCell === 'TRUE',
-      description: descriptionCell,
-      checkboxCell: `${columnName}${index + CHECKLIST_START_ROW_OFFSET}`,
-    };
-  });
-};
 
 export async function getServerSideProps() {
   const auth = await google.auth.getClient({
