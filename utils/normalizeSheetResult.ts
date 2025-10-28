@@ -1,4 +1,4 @@
-import { TodoResponse } from '../../../types';
+import { TodoResponse } from '../types';
 
 export const normalizeSheetResult = (
   columnName: string,

@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import Checkbox from '@/components/checkbox';
-import { useSheetChecklist } from '@/feaures/checkilist/hooks/useSheetChecklist';
-import { normalizeSheetResult } from '@/feaures/checkilist/utils/normalizeSheetResult';
+import { useSheetChecklist } from '@/hooks/useSheetChecklist';
+import { normalizeSheetResult } from '@/utils/normalizeSheetResult';
 import { TodoResponse } from '../../types';
 
 const PRE_SERVICE_RANGE_CELL = 'B2';
