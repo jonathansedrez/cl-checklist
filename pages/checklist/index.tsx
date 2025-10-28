@@ -4,8 +4,6 @@ import { useSheetChecklist } from '@/feaures/checkilist/hooks/useSheetChecklist'
 import { normalizeSheetResult } from '@/feaures/checkilist/utils/normalizeSheetResult';
 import { TodoResponse } from '../../types';
 
-const SHEET_PAGE = 'APOIO';
-
 const PRE_SERVICE_RANGE_CELL = 'B2';
 const RECEPTION_RANGE_CELL = 'E2';
 const DURING_THE_SERVICE_RANGE_CELL = 'H2';
@@ -16,28 +14,40 @@ const RECEPTION_CHECKBOX_COLUMN = 'D';
 const DURING_THE_SERVICE_CHECKBOX_COLUMN = 'G';
 const POST_SERVICE_CHECKBOX_COLUMN = 'J';
 
-export async function getServerSideProps() {
+export async function getServerSideProps({
+  query,
+}: {
+  query: { page?: string };
+}) {
+  const page = (query.page as string) || 'APOIO';
   const auth = await google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
   const sheets = google.sheets({ version: 'v4', auth });
 
-  const preServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${PRE_SERVICE_RANGE_CELL}`,
-  });
-  const receptionSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${RECEPTION_RANGE_CELL}`,
-  });
-  const duringTheServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${DURING_THE_SERVICE_RANGE_CELL}`,
-  });
-  const postServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${POST_SERVICE_RANGE_CELL}`,
-  });
+  const [
+    preServiceSheetData,
+    receptionSheetData,
+    duringTheServiceSheetData,
+    postServiceSheetData,
+  ] = await Promise.all([
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${PRE_SERVICE_RANGE_CELL}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${RECEPTION_RANGE_CELL}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${DURING_THE_SERVICE_RANGE_CELL}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${POST_SERVICE_RANGE_CELL}`,
+    }),
+  ]);
 
   const [preServiceRangeCellValue] = preServiceSheetData.data
     .values as string[][];
@@ -48,22 +58,29 @@ export async function getServerSideProps() {
   const [postServiceRangeCellValue] = postServiceSheetData.data
     .values as string[][];
 
-  const allPreServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${preServiceRangeCellValue}`,
-  });
-  const allReceptionSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${receptionRangeCellValue}`,
-  });
-  const allDuringTheServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${duringTheServiceRangeCellValue}`,
-  });
-  const allPostServiceSheetData = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `${SHEET_PAGE}!${postServiceRangeCellValue}`,
-  });
+  const [
+    allPreServiceSheetData,
+    allReceptionSheetData,
+    allDuringTheServiceSheetData,
+    allPostServiceSheetData,
+  ] = await Promise.all([
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${preServiceRangeCellValue}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${receptionRangeCellValue}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${duringTheServiceRangeCellValue}`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: `${page}!${postServiceRangeCellValue}`,
+    }),
+  ]);
 
   const allPreServiceValues = allPreServiceSheetData.data.values as string[][];
   const allReceptionValues = allReceptionSheetData.data.values as string[][];
@@ -90,6 +107,7 @@ export async function getServerSideProps() {
         POST_SERVICE_CHECKBOX_COLUMN,
         allPostServiceValues,
       ),
+      page,
     },
   };
 }
@@ -99,13 +117,15 @@ export default function ChecklistPage({
   receptionLinesToTodo,
   duringTheServiceLinesToTodo,
   postServiceLinesToTodo,
+  page,
 }: {
   preServiceLinesToTodo: TodoResponse[];
   receptionLinesToTodo: TodoResponse[];
   duringTheServiceLinesToTodo: TodoResponse[];
   postServiceLinesToTodo: TodoResponse[];
+  page: string;
 }) {
-  const { handleUpdateCheckbox, cellsLoading } = useSheetChecklist(SHEET_PAGE);
+  const { handleUpdateCheckbox, cellsLoading } = useSheetChecklist(page);
 
   return (
     <fieldset className="m-5">
