@@ -1,8 +1,8 @@
 import { google } from 'googleapis';
-import Checkbox from '@/components/checkbox';
 import { useSheetChecklist } from '@/hooks/useSheetChecklist';
 import { normalizeSheetResult } from '@/utils/normalizeSheetResult';
 import { TodoResponse } from '../../types';
+import ServiceSection from '@/components/ServiceSection';
 
 const PRE_SERVICE_RANGE_CELL = 'B2';
 const RECEPTION_RANGE_CELL = 'E2';
@@ -129,77 +129,33 @@ export default function ChecklistPage({
 
   return (
     <fieldset className="m-5">
-      <div className="space-y-2">
-        <p>Pré recepição</p>
-        <div>
-          {preServiceLinesToTodo.map((todo) => (
-            <Checkbox
-              key={todo.checkboxCell}
-              id={todo.checkboxCell}
-              label={todo.description}
-              isChecked={todo.isChecked}
-              isLoading={cellsLoading.includes(todo.checkboxCell)}
-              onChange={(isChecked) =>
-                handleUpdateCheckbox(todo.checkboxCell, isChecked)
-              }
-            />
-          ))}
-        </div>
-      </div>
+      <ServiceSection
+        title="Pré recepição"
+        todos={preServiceLinesToTodo}
+        cellsLoading={cellsLoading}
+        onUpdateCheckbox={handleUpdateCheckbox}
+      />
 
-      <div className="space-y-2">
-        <p>Recepição</p>
-        <div>
-          {receptionLinesToTodo.map((todo) => (
-            <Checkbox
-              key={todo.checkboxCell}
-              id={todo.checkboxCell}
-              label={todo.description}
-              isChecked={todo.isChecked}
-              isLoading={cellsLoading.includes(todo.checkboxCell)}
-              onChange={(isChecked) =>
-                handleUpdateCheckbox(todo.checkboxCell, isChecked)
-              }
-            />
-          ))}
-        </div>
-      </div>
+      <ServiceSection
+        title="Recepição"
+        todos={receptionLinesToTodo}
+        cellsLoading={cellsLoading}
+        onUpdateCheckbox={handleUpdateCheckbox}
+      />
 
-      <div className="space-y-2">
-        <p>Durante o culto</p>
-        <div>
-          {duringTheServiceLinesToTodo.map((todo) => (
-            <Checkbox
-              key={todo.checkboxCell}
-              id={todo.checkboxCell}
-              label={todo.description}
-              isChecked={todo.isChecked}
-              isLoading={cellsLoading.includes(todo.checkboxCell)}
-              onChange={(isChecked) =>
-                handleUpdateCheckbox(todo.checkboxCell, isChecked)
-              }
-            />
-          ))}
-        </div>
-      </div>
+      <ServiceSection
+        title="Durante o culto"
+        todos={duringTheServiceLinesToTodo}
+        cellsLoading={cellsLoading}
+        onUpdateCheckbox={handleUpdateCheckbox}
+      />
 
-      <div className="space-y-2">
-        <p>Pós culto</p>
-        <div>
-          {postServiceLinesToTodo.map((todo) => (
-            <Checkbox
-              key={todo.checkboxCell}
-              id={todo.checkboxCell}
-              label={todo.description}
-              isChecked={todo.isChecked}
-              isLoading={cellsLoading.includes(todo.checkboxCell)}
-              onChange={(isChecked) =>
-                handleUpdateCheckbox(todo.checkboxCell, isChecked)
-              }
-            />
-          ))}
-        </div>
-      </div>
+      <ServiceSection
+        title="Pós culto"
+        todos={postServiceLinesToTodo}
+        cellsLoading={cellsLoading}
+        onUpdateCheckbox={handleUpdateCheckbox}
+      />
     </fieldset>
   );
 }
