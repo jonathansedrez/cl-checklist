@@ -18,8 +18,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
       <div className="flex items-center">
         {isLoading ? (
           <span role="status" className="flex items-center">
-            <svg
-              className="animate-spin h-7 w-7 text-blue-400"
+                    <svg
+                      className="animate-spin h-7 w-7 text-brand-blue"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 28 28"
               aria-hidden="true"
@@ -45,8 +45,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
               aria-hidden="true"
               className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors flex-shrink-0 ${
                 isChecked
-                  ? 'bg-blue-400 border-blue-400'
-                  : 'bg-white border border-blue-400'
+                          ? 'bg-brand-blue border-brand-blue'
+              : 'bg-white border border-brand-blue'
               }`}
             >
               {isChecked ? (
