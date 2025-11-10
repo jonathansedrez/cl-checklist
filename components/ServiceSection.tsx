@@ -16,8 +16,10 @@ export default function ServiceSection({
   onUpdateCheckbox,
 }: ServiceSectionProps) {
   return (
-    <div className="space-y-2">
-      <h2 className="font-title">{title}</h2>
+    <div className="mb-6">
+      <h2 className="font-title gray-400 mb-4 text-2xl text-gray-500 uppercase">
+        {title}
+      </h2>
       <div>
         {todos.map((todo) => (
           <Checkbox

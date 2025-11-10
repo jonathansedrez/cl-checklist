@@ -46,7 +46,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
               className={`inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors flex-shrink-0 ${
                 isChecked
                   ? 'bg-brand-blue border-brand-blue'
-                  : 'bg-white border border-brand-blue'
+                  : 'background border border-brand-blue'
               }`}
             >
               {isChecked ? (

@@ -130,14 +130,14 @@ export default function ChecklistPage({
   return (
     <fieldset className="m-5">
       <ServiceSection
-        title="Pré recepição"
+        title="Pré recepção"
         todos={preServiceLinesToTodo}
         cellsLoading={cellsLoading}
         onUpdateCheckbox={handleUpdateCheckbox}
       />
 
       <ServiceSection
-        title="Recepição"
+        title="Recepção"
         todos={receptionLinesToTodo}
         cellsLoading={cellsLoading}
         onUpdateCheckbox={handleUpdateCheckbox}

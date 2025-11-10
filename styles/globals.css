@@ -3,16 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #f0e7d5;
+  --background: #f7f2eb;
   --foreground: #212842;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  /* Use the CSS variable injected by next/font.local (geistSans) with fallbacks */
-  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Use the title font for headings when available */
