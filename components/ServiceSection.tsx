@@ -17,7 +17,7 @@ export default function ServiceSection({
 }: ServiceSectionProps) {
   return (
     <div className="space-y-2">
-      <p>{title}</p>
+      <h2 className="font-title">{title}</h2>
       <div>
         {todos.map((todo) => (
           <Checkbox
