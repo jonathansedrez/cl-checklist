@@ -12,17 +12,6 @@ body {
   background: var(--background);
 }
 
-/* Use the title font for headings when available */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-title), ui-sans-serif, system-ui, -apple-system,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
