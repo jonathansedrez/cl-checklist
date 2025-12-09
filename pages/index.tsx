@@ -6,11 +6,11 @@ export default function Home() {
       <div className="text-center mb-8 w-full sm:w-auto">
         <h1
           className="text-6xl font-black text-brand-blue mb-4"
-          style={{ fontFamily: 'Castoro' }}
+          style={{ fontFamily: '"Anthropic Serif", Georgia, sans-serif' }}
         >
           Checklist
         </h1>
-        <p className="text-gray-600 max-w-md">
+        <p className="text-gray-600 max-w-md" style={{ fontFamily: '"Anthropic Sans", Arial, sans-serif' }}>
           Verifique cada detalhe da escala e contribua para que tudo aconteça
           com excelência para a glória de Deus
         </p>

@@ -68,7 +68,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         )}
       </div>
       <div>
-        <p className="font-medium font-body" style={{ fontFamily: 'Helvetica' }}>{label}</p>
+        <p className="font-medium font-body" style={{ fontFamily: '"Anthropic Sans", Arial, sans-serif' }}>{label}</p>
       </div>
     </label>
   );
