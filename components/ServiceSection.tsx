@@ -17,7 +17,10 @@ export default function ServiceSection({
 }: ServiceSectionProps) {
   return (
     <div className="mb-6">
-      <h2 className="font-title gray-400 mb-4 text-2xl text-gray-800 font-black" style={{ fontFamily: '"Anthropic Serif", Georgia, sans-serif' }}>
+      <h2
+        className="font-title gray-400 mb-4 text-4xl text-brand-blue font-black"
+        style={{ fontFamily: '"Anthropic Serif", Georgia, sans-serif' }}
+      >
         {title}
       </h2>
       <div>

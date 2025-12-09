@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import Link from 'next/link';
 import { useSheetChecklist } from '@/hooks/useSheetChecklist';
 import { normalizeSheetResult } from '@/utils/normalizeSheetResult';
 import { TodoResponse } from '../../types';
@@ -128,7 +129,11 @@ export default function ChecklistPage({
   const { handleUpdateCheckbox, cellsLoading } = useSheetChecklist(page);
 
   return (
-    <fieldset className="m-5">
+    <>
+      <Link href="/" className="inline-block m-5 p-2 text-brand-blue hover:text-gray-800 font-semibold">
+        ← Voltar
+      </Link>
+      <fieldset className="m-5">
       <ServiceSection
         title="Pré recepção"
         todos={preServiceLinesToTodo}
@@ -157,5 +162,6 @@ export default function ChecklistPage({
         onUpdateCheckbox={handleUpdateCheckbox}
       />
     </fieldset>
+    </>
   );
 }
