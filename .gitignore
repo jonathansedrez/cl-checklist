@@ -2,7 +2,7 @@
 
 # google secrets
 secrets.json
-/.env.local
+.env.local
 
 # dependencies
 /node_modules
