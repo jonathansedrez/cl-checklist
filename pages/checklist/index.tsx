@@ -21,23 +21,7 @@ export async function getServerSideProps({
   query: { page?: string };
 }) {
   const page = (query.page as string) || 'APOIO';
-  const credentials = process.env.GOOGLE_PRIVATE_KEY
-    ? {
-        type: 'service_account',
-        project_id: process.env.GOOGLE_PROJECT_ID,
-        private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        auth_uri: process.env.GOOGLE_AUTH_URI,
-        token_uri: process.env.GOOGLE_TOKEN_URI,
-        auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-        client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-      }
-    : undefined;
-
-  const auth = new google.auth.GoogleAuth({
-    credentials,
+  const auth = await google.auth.getClient({
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
   const sheets = google.sheets({ version: 'v4', auth });
@@ -146,38 +130,41 @@ export default function ChecklistPage({
 
   return (
     <>
-      <Link href="/" className="inline-block m-5 p-2 text-brand-blue hover:text-gray-800 font-semibold">
+      <Link
+        href="/"
+        className="inline-block m-5 p-2 text-brand-blue hover:text-gray-800 font-semibold"
+      >
         ← Voltar
       </Link>
       <fieldset className="m-5">
-      <ServiceSection
-        title="Pré recepção"
-        todos={preServiceLinesToTodo}
-        cellsLoading={cellsLoading}
-        onUpdateCheckbox={handleUpdateCheckbox}
-      />
+        <ServiceSection
+          title="Pré recepção"
+          todos={preServiceLinesToTodo}
+          cellsLoading={cellsLoading}
+          onUpdateCheckbox={handleUpdateCheckbox}
+        />
 
-      <ServiceSection
-        title="Recepção"
-        todos={receptionLinesToTodo}
-        cellsLoading={cellsLoading}
-        onUpdateCheckbox={handleUpdateCheckbox}
-      />
+        <ServiceSection
+          title="Recepção"
+          todos={receptionLinesToTodo}
+          cellsLoading={cellsLoading}
+          onUpdateCheckbox={handleUpdateCheckbox}
+        />
 
-      <ServiceSection
-        title="Durante o culto"
-        todos={duringTheServiceLinesToTodo}
-        cellsLoading={cellsLoading}
-        onUpdateCheckbox={handleUpdateCheckbox}
-      />
+        <ServiceSection
+          title="Durante o culto"
+          todos={duringTheServiceLinesToTodo}
+          cellsLoading={cellsLoading}
+          onUpdateCheckbox={handleUpdateCheckbox}
+        />
 
-      <ServiceSection
-        title="Pós culto"
-        todos={postServiceLinesToTodo}
-        cellsLoading={cellsLoading}
-        onUpdateCheckbox={handleUpdateCheckbox}
-      />
-    </fieldset>
+        <ServiceSection
+          title="Pós culto"
+          todos={postServiceLinesToTodo}
+          cellsLoading={cellsLoading}
+          onUpdateCheckbox={handleUpdateCheckbox}
+        />
+      </fieldset>
     </>
   );
 }
