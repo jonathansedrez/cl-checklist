@@ -21,13 +21,25 @@ export async function getServerSideProps({
   query: { page?: string };
 }) {
   const page = (query.page as string) || 'APOIO';
-  const auth = await google.auth.getClient({
-    credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-  });
+
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.split(String.raw`\n`).join(
+    '\n',
+  );
+
+  console.log('GOOGLE_CLIENT_EMAIL exists:', !!clientEmail);
+  console.log('GOOGLE_PRIVATE_KEY exists:', !!privateKey);
+  console.log('GOOGLE_PRIVATE_KEY length:', privateKey?.length);
+
+  if (!clientEmail || !privateKey) {
+    throw new Error(
+      'Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY environment variables',
+    );
+  }
+
+  const auth = new google.auth.JWT(clientEmail, undefined, privateKey, [
+    'https://www.googleapis.com/auth/spreadsheets.readonly',
+  ]);
   const sheets = google.sheets({ version: 'v4', auth });
 
   const [

@@ -7,13 +7,20 @@ type UpdateCheckboxRequest = {
 };
 
 export const getGoogleSheetsClient = (): sheets_v4.Sheets => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.split(String.raw`\n`).join(
+    '\n',
+  );
+
+  if (!clientEmail || !privateKey) {
+    throw new Error(
+      'Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY environment variables',
+    );
+  }
+
+  const auth = new google.auth.JWT(clientEmail, undefined, privateKey, [
+    'https://www.googleapis.com/auth/spreadsheets',
+  ]);
   return google.sheets({ version: 'v4', auth });
 };
 
