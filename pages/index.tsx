@@ -60,7 +60,7 @@ export default function Home() {
           Apoio
         </Link>
         <Link
-          href="/checklist?page=APOIO"
+          href="/checklist?page=MANAGER"
           className="w-full sm:w-48 px-6 py-3 bg-brand-blue text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors text-center"
         >
           Manager
