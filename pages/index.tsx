@@ -65,6 +65,12 @@ export default function Home() {
         >
           Manager
         </Link>
+        <Link
+          href="/todos"
+          className="w-full sm:w-48 px-6 py-3 bg-brand-blue text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors text-center"
+        >
+          Todos
+        </Link>
       </div>
     </div>
   );
