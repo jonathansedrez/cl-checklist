@@ -27,10 +27,6 @@ export async function getServerSideProps({
     '\n',
   );
 
-  console.log('GOOGLE_CLIENT_EMAIL exists:', !!clientEmail);
-  console.log('GOOGLE_PRIVATE_KEY exists:', !!privateKey);
-  console.log('GOOGLE_PRIVATE_KEY length:', privateKey?.length);
-
   if (!clientEmail || !privateKey) {
     throw new Error(
       'Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY environment variables',
